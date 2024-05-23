@@ -112,6 +112,13 @@
   tags:
     - web-api
 
+- name: "Lookup TXT record"
+  when: letsencrypt_challenge['challenge_data'] is defined
+  ansible.builtin.debug:
+    msg: "{{ lookup('community.general.dig', '_acme-challenge.' + certificate_common_name + '.', qtype='TXT') }}"
+  register: _lookup_txt
+  failed_when: "_lookup_txt.msg == 'NXDOMAIN'"
+
 - name: validate the Let's Encrypt challenge
   community.crypto.acme_certificate:
     acme_directory: "{{ letsencrypt_acme_directory }}"
@@ -124,8 +131,8 @@
     data: "{{ letsencrypt_challenge }}"
     terms_agreed: yes
   register: letsencrypt_validation
-  retries: 3
-  delay: 30
+  retries: 5
+  delay: 60
   until: letsencrypt_validation is success
   when: letsencrypt_challenge['challenge_data'] is defined
   tags:
