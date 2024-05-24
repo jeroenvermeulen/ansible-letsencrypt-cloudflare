@@ -119,7 +119,7 @@
   register: _lookup_txt
   failed_when: "_lookup_txt.msg == 'NXDOMAIN'"
 
-- name: validate the Let's Encrypt challenge
+- name: Validate the Let's Encrypt challenge
   community.crypto.acme_certificate:
     acme_directory: "{{ letsencrypt_acme_directory }}"
     acme_version: "{{ letsencrypt_acme_version }}"
